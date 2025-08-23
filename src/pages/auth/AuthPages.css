@@ -1,0 +1,17 @@
+.auth-background {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  min-height: 100vh;
+}
+
+.auth-form-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0px 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 768px) {
+  .auth-background {
+    padding: 20px;
+  }
+}
