@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Drawer,
@@ -29,14 +29,21 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { ROUTES } from '../../routes';
+import {loginUser} from '../../slice/RegisterSlice.js';
+import { useSelector,useDispatch } from 'react-redux';
 
 const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, isMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+//  const { user } = useAuth();
   const [jobsOpen, setJobsOpen] = React.useState(false);
   const [candidatesOpen, setCandidatesOpen] = React.useState(false);
-
+  const {user}=useSelector((state)=>state.users);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(loginUser())
+  },[dispatch]
+  )
   const menuItems = [
     {
       title: 'Dashboard',

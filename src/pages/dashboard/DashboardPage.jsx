@@ -107,10 +107,10 @@ const DashboardPage = () => {
                     fontWeight: 'bold'
                   }}
                 >
-                  M
+                  A
                 </Avatar>
                 <Typography variant="h6" fontWeight="bold">
-                  Manisha Sah
+                  Ayushi Gupta
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Senior Recruiter

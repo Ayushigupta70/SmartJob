@@ -8,21 +8,21 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import theme from './theme/theme.js';
 import './styles/global.css';
 import { Provider } from "react-redux";
-import { store } from "../src/store/Store.js";
+import { store } from "./store/Store.js";   // simplified path
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <Provider store={store}>
-          <App />
-          </Provider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <AuthProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </Provider>
   </React.StrictMode>
 );

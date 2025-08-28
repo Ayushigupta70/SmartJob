@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { useSelector } from 'react-redux';
 import { ROUTES } from './routeConstants.js';
 
-// Layout Components
+// Layout
 import DashboardLayout from '../components/layout/DashboardLayout.jsx';
 
 // Auth Pages
@@ -18,111 +18,95 @@ import DashboardPage from '../pages/dashboard/DashboardPage.jsx';
 import JobsPage from '../pages/jobs/JobsPage.jsx';
 import PostJobPage from '../pages/jobs/PostJobPage.jsx';
 import EditJobPage from '../pages/jobs/EditJobPage.jsx';
+import ManageJobsPage from '../pages/jobs/ManageJobPage.jsx';
 
 // Candidates Pages
 import CandidatesPage from '../pages/candidates/CandidatesPage.jsx';
+import ApplicantListPage from '../pages/candidates/ApplicationListPage.jsx';
+import AcceptedApplicantsPage from '../pages/candidates/AcceptedApplicantsPage.jsx';
+import RejectedApplicantsPage from '../pages/candidates/RejectedApplicantsPage.jsx';
 import SearchCandidatesPage from '../pages/candidates/SearchCandidatesPage.jsx';
 import BookmarkedCandidatesPage from '../pages/candidates/BookmarkedCandidatesPage.jsx';
 import CandidateDetailPage from '../pages/candidates/CandidateDetailPage.jsx';
 
-// Interviews Pages
+// Interviews
 import InterviewsPage from '../pages/interviews/InterviewsPage.jsx';
 
-// Communication Pages
+// Communication
 import CommunicationPage from '../pages/communication/CommunicationPage.jsx';
 
-// Profile Pages
+// Profile
 import ProfilePage from '../pages/profile/ProfilePage.jsx';
-import ManageJobsPage from '../pages/jobs/ManageJobPage.jsx';
-import ApplicantListPage from '../pages/candidates/ApplicationListPage.jsx';
-import AcceptedApplicantsPage from '../pages/candidates/AcceptedApplicantsPage.jsx';
-import RejectedApplicantsPage from '../pages/candidates/RejectedApplicantsPage.jsx';
 
-// Protected Route Component
+// -------------------- Protected & Public Route --------------------
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { token } = useSelector((state) => state.users);
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '18px'
-      }}>
-        Loading...
-      </div>
-    );
-  }
-
-  return user ? children : <Navigate to={ROUTES.LOGIN} replace />;
+  return token ? children : <Navigate to={ROUTES.LOGIN} replace />;
 };
 
-// Public Route Component (redirects to dashboard if already logged in)
 const PublicRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { token, userRole } = useSelector((state) => state.users);
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '18px'
-      }}>
-        Loading...
-      </div>
-    );
+  if (token) {
+    return userRole === "Admin"
+      ? <Navigate to="/admin-dashboard" replace />
+      : <Navigate to={ROUTES.DASHBOARD} replace />;
   }
 
-  return user ? <Navigate to={ROUTES.DASHBOARD} replace /> : children;
+  return children;
 };
 
+// -------------------- Routes --------------------
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes - Auth Pages */}
-      <Route path={ROUTES.LOGIN} element={
-        <PublicRoute>
-          <LoginPage />
-        </PublicRoute>
-      } />
-
-      <Route path={ROUTES.REGISTER} element={
-        <PublicRoute>
-          <RegisterPage />
-        </PublicRoute>
-      } />
-
-      {/* Temporary Test Page */}
+      {/* Public Routes */}
+      <Route
+        path={ROUTES.LOGIN}
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.REGISTER}
+        element={
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        }
+      />
       <Route path="/auth-test" element={<AuthTestPage />} />
 
-      {/* Protected Routes - Dashboard Pages */}
-      <Route path={ROUTES.HOME} element={
-        <ProtectedRoute>
-          <DashboardLayout />
-        </ProtectedRoute>
-      }>
+      {/* Protected Dashboard Routes */}
+      <Route
+        path={ROUTES.HOME}
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         {/* Dashboard */}
         <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
 
-        {/* Jobs Management */}
+        {/* Jobs */}
         <Route path="jobs" element={<JobsPage />} />
         <Route path="jobs/post" element={<PostJobPage />} />
-        <Route path="/jobs/manage" element={<ManageJobsPage />} />
+        <Route path="jobs/manage" element={<ManageJobsPage />} />
         <Route path="jobs/edit/:id" element={<EditJobPage />} />
 
-        {/* Candidates Management */}
+        {/* Candidates */}
         <Route path="candidates" element={<CandidatesPage />} />
-        <Route path="/candidates/applicants" element={<ApplicantListPage />} />
+        <Route path="candidates/applicants" element={<ApplicantListPage />} />
+        <Route path="candidates/accepted" element={<AcceptedApplicantsPage />} />
+        <Route path="candidates/rejected" element={<RejectedApplicantsPage />} />
         <Route path="candidates/search" element={<SearchCandidatesPage />} />
         <Route path="candidates/bookmarked" element={<BookmarkedCandidatesPage />} />
         <Route path="candidates/:id" element={<CandidateDetailPage />} />
-        <Route path="/candidates/accapted" element={<AcceptedApplicantsPage />} />
-        <Route path="/candidates/rejected" element={<RejectedApplicantsPage />} />
 
         {/* Interviews */}
         <Route path="interviews" element={<InterviewsPage />} />
@@ -134,25 +118,39 @@ const AppRoutes = () => {
         <Route path="profile" element={<ProfilePage />} />
       </Route>
 
-      {/* Catch-all route for 404 */}
-      <Route path="*" element={
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          textAlign: 'center'
-        }}>
-          <h1>404 - Page Not Found</h1>
-          <p>The page you are looking for does not exist.</p>
-          <a href={ROUTES.DASHBOARD} style={{ color: '#6366f1', textDecoration: 'none' }}>
-            Go to Dashboard
-          </a>
-        </div>
-      } />
+      {/* 404 - Catch All */}
+      <Route
+        path="*"
+        element={
+          <div style={styles.notFound}>
+            <h1>404 - Page Not Found</h1>
+            <p>The page you are looking for does not exist.</p>
+            <a href={ROUTES.DASHBOARD} style={styles.link}>
+              Go to Dashboard
+            </a>
+          </div>
+        }
+      />
     </Routes>
   );
+};
+
+// -------------------- Styles --------------------
+const styles = {
+  notFound: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    textAlign: 'center',
+  },
+  link: {
+    color: '#6366f1',
+    textDecoration: 'none',
+    marginTop: '10px',
+    fontWeight: 'bold',
+  },
 };
 
 export default AppRoutes;
