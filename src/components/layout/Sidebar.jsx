@@ -136,7 +136,7 @@ const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, isMobile }) => {
           </Avatar>
           <Box>
             <Typography variant="subtitle1" fontWeight="600">
-              {user?.name}
+              {user?.fullName}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {user?.role}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -28,9 +28,17 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const Header = ({ handleDrawerToggle, isMobile }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchValue, setSearchValue] = useState('');
+
+  // Reset search input when leaving search page
+  useEffect(() => {
+    if (!location.pathname.includes('/candidates/search')) {
+      setSearchValue('');
+    }
+  }, [location.pathname]);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,6 +63,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
     e.preventDefault();
     if (searchValue.trim()) {
       navigate(`/candidates/search?q=${encodeURIComponent(searchValue)}`);
+      setSearchValue(''); // reset input after search
     }
   };
 
@@ -65,7 +74,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
       sx={{
         backgroundColor: 'white',
         borderBottom: '1px solid #e2e8f0',
-        color: 'text.primary'
+        color: 'text.primary',
       }}
     >
       <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
@@ -88,12 +97,14 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
         </Typography>
 
         {/* Search Bar */}
-        <Box sx={{
-          flexGrow: 1,
-          display: { xs: 'none', sm: 'flex' },
-          justifyContent: 'center',
-          maxWidth: 500
-        }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: { xs: 'none', sm: 'flex' },
+            justifyContent: 'center',
+            maxWidth: 500,
+          }}
+        >
           <Paper
             component="form"
             onSubmit={handleSearch}
@@ -106,13 +117,8 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
               backgroundColor: '#f8fafc',
               border: '1px solid #e2e8f0',
               boxShadow: 'none',
-              '&:hover': {
-                border: '1px solid #cbd5e1',
-              },
-              '&:focus-within': {
-                border: '1px solid #6366f1',
-                backgroundColor: 'white',
-              }
+              '&:hover': { border: '1px solid #cbd5e1' },
+              '&:focus-within': { border: '1px solid #6366f1', backgroundColor: 'white' },
             }}
           >
             <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
@@ -128,7 +134,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
           </Paper>
         </Box>
 
-        {/* Right side icons - moved to end using ml: 'auto' */}
+        {/* Right side icons */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
           {/* Mobile Search Icon */}
           <IconButton
@@ -155,17 +161,14 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
 
           {/* Profile */}
           <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-            <IconButton
-              onClick={handleProfileMenuOpen}
-              sx={{ p: 0.5 }}
-            >
+            <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0.5 }}>
               <Avatar
                 sx={{
                   width: 40,
                   height: 40,
                   backgroundColor: 'primary.main',
                   fontSize: '1rem',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
                 }}
               >
                 {user?.name?.charAt(0)?.toUpperCase()}
@@ -174,7 +177,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
 
             <Box sx={{ ml: 1, display: { xs: 'none', sm: 'block' } }}>
               <Typography variant="body2" fontWeight="600">
-                {user?.name}
+                {user?.fullName}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {user?.role}
@@ -195,12 +198,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
                 filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
                 mt: 1.5,
                 minWidth: 200,
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
+                '& .MuiAvatar-root': { width: 32, height: 32, ml: -0.5, mr: 1 },
                 '&:before': {
                   content: '""',
                   display: 'block',
@@ -220,7 +218,7 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
           >
             <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #e2e8f0' }}>
               <Typography variant="subtitle2" fontWeight="600">
-                {user?.name}
+                {user?.fullName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user?.email}

@@ -56,17 +56,17 @@ const ProfilePage = () => {
                   {editMode ? (
                     <>
                       <TextField
-                        name="name"
+                        name="fullName"
                         label="Full Name"
-                        value={formData.name || ""}
+                        value={formData.fullName || ""}
                         onChange={handleChange}
                         fullWidth
                         sx={{ mb: 2 }}
                       />
                       <TextField
-                        name="company"
-                        label="Company"
-                        value={formData.company || ""}
+                        name="Company"
+                        label="companyName"
+                        value={formData.companyName || ""}
                         onChange={handleChange}
                         fullWidth
                         sx={{ mb: 2 }}

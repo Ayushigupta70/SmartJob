@@ -73,7 +73,7 @@ const DashboardPage = () => {
       {/* Welcome Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Welcome back, Ayushi Gupta! 👋
+          Welcome back! 👋
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Here's what's happening with your recruitment activities today.

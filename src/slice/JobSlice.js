@@ -4,7 +4,7 @@ import axios from '../utils/axios';
 
 export const createJob = createAsyncThunk("jobs/createJob",async (jobData, thunkApi) => {
     try {
-      const res = await axios.post(`/`, jobData);
+      const res = await axios.post(`jobs/`, jobData);
       return res.data.data; 
     } catch (err) {
       return thunkApi.rejectWithValue(
@@ -15,7 +15,7 @@ export const createJob = createAsyncThunk("jobs/createJob",async (jobData, thunk
 );
 export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async (_, thunkApi) => {
   try {
-    const res = await axios.get(`/`);
+    const res = await axios.get(`jobs/`);
     return res.data.data;  
   } catch (err) {
     return thunkApi.rejectWithValue(
@@ -25,7 +25,7 @@ export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async (_, thunkApi) 
 });
 export const updateJob = createAsyncThunk("jobs/updateJob",async (jobData, thunkApi) => {
     try {
-      const res = await axios.put(`/${jobData._id}`, jobData);
+      const res = await axios.put(`jobs/${jobData._id}`, jobData);
       return res.data.data;
     } catch (err) {
       return thunkApi.rejectWithValue(
@@ -36,7 +36,7 @@ export const updateJob = createAsyncThunk("jobs/updateJob",async (jobData, thunk
 )
 export const deleteJob = createAsyncThunk("jobs/deleteJob",async (jobId, thunkApi) => {
     try {
-      await axios.delete(`/${jobId}`);
+      await axios.delete(`jobs/${jobId}`);
       return jobId;
     } catch (err) {
       return thunkApi.rejectWithValue(
