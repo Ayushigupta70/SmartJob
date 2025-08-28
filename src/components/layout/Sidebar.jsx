@@ -40,10 +40,7 @@ const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, isMobile }) => {
   const [candidatesOpen, setCandidatesOpen] = React.useState(false);
   const {user}=useSelector((state)=>state.users);
   const dispatch = useDispatch();
-  useEffect(()=>{
-    dispatch(loginUser())
-  },[dispatch]
-  )
+ 
   const menuItems = [
     {
       title: 'Dashboard',

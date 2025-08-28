@@ -1,15 +1,21 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: "http://localhost:4000/api/user",
+    baseURL: "http://localhost:4000/api/",
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 
-instance.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    console.log("Token from localStorage:", token);
-    if (token && !config.url.includes("login") && !config.url.includes("register")) {
-    config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+instance.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config; // <- must always return config
+    },
+    (error) => Promise.reject(error)
+);
+
 export default instance;

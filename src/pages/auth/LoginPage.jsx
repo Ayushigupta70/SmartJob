@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation,useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Box, Card, CardContent, TextField, Button, Typography,
   Alert, Container, Grid, IconButton, InputAdornment, MenuItem
@@ -10,20 +10,9 @@ import { loginUser } from "../../slice/RegisterSlice";
 import "./AuthPages.css";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, token, userRole } = useSelector((state) => state.users);
-const location = useLocation();
+  const { loading, error } = useSelector((state) => state.users);
 
-useEffect(() => {
-  if (token && location.pathname === "/login") {
-    if (userRole === "Admin") {
-      navigate("/admin-dashboard", { replace: true });
-    } else {
-      navigate("/dashboard", { replace: true });
-    }
-  }
-}, [token, userRole, navigate]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -37,12 +26,13 @@ useEffect(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData)).unwrap().catch((err) => {
-      console.error("Login failed:", err);
-    });
-  };
+    console.log("Submitting login:", formData); // log formData
+    dispatch(loginUser(formData))
+        .unwrap()
+        .then((res) => console.log("Login response:", res))
+        .catch((err) => console.error("Login failed:", err));
+};
 
-  
 
   return (
     <Box className="auth-background">
