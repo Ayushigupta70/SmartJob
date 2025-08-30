@@ -22,6 +22,8 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
     experienceLevel: "",
     location: "",
     skill: [],
+    postingDate: "",       
+    applicationDeadline: "", 
     ...existingJob,
   });
   const [skillInput, setSkillInput] = useState("");
@@ -48,7 +50,7 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
   const handleRemoveSkill = (skillToRemove) => {
     setJobData((prevData) => ({
       ...prevData,
-      skills: prevData.skill.filter((skill) => skill !== skillToRemove),
+      skill: prevData.skill.filter((skill) => skill !== skillToRemove),
     }));
   };
 
@@ -58,7 +60,7 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
       dispatch(updateJob(jobData));
       if (onUpdate) onUpdate(jobData);
     } else {
-      dispatch(createJob(jobData)); 
+      dispatch(createJob(jobData));
     }
     setSuccess(true);
     setTimeout(() => navigate("/jobs"), 2000);
@@ -92,21 +94,29 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
         <CardContent sx={{ p: 4 }}>
           <Box component="form" onSubmit={handleSubmit}>
             <Grid container spacing={3}>
+              {/* Job Title */}
               <Grid item xs={12}>
-                <TextField fullWidth label="Job Title" name="jobTitle" value={jobData.jobTitle}
-                  onChange={handleInputChange} required />
+                <TextField fullWidth label="Job Title" name="jobTitle"
+                  value={jobData.jobTitle} onChange={handleInputChange} required />
               </Grid>
+
+              {/* Job Description */}
               <Grid item xs={12}>
                 <TextField fullWidth multiline rows={4} label="Job Description"
                   name="jobDescription" value={jobData.jobDescription}
                   onChange={handleInputChange} required />
               </Grid>
+
+              {/* Required Skills & Qualifications */}
               <Grid item xs={12}>
                 <TextField fullWidth multiline rows={3}
                   label="Required Skills & Qualifications"
-                  name="requiredSkillandQualification" value={jobData.requiredSkillandQualification}
+                  name="requiredSkillandQualification"
+                  value={jobData.requiredSkillandQualification}
                   onChange={handleInputChange} required />
               </Grid>
+
+              {/* Skills */}
               <Grid item xs={12}>
                 <TextField
                   fullWidth label="Skills (Press Enter to add)"
@@ -122,6 +132,8 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
                   ))}
                 </Box>
               </Grid>
+
+              {/* Salary */}
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="Minimum Salary" name="minimumSalary" type="number"
                   value={jobData.minimumSalary} onChange={handleInputChange} />
@@ -130,6 +142,8 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
                 <TextField fullWidth label="Maximum Salary" name="maximumSalary" type="number"
                   value={jobData.maximumSalary} onChange={handleInputChange} />
               </Grid>
+
+              {/* Job Type */}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth required>
                   <InputLabel>Job Type</InputLabel>
@@ -142,23 +156,43 @@ const PostJobPage = ({ editMode = false, existingJob = {}, onUpdate }) => {
                   </Select>
                 </FormControl>
               </Grid>
+
+              {/* Experience Level */}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth required>
                   <InputLabel>Experience Level</InputLabel>
                   <Select name="experienceLevel" value={jobData.experienceLevel}
                     onChange={handleInputChange}>
                     <MenuItem value="Fresher">Fresher</MenuItem>
-                    <MenuItem value="Mid">Mid </MenuItem>
-                    <MenuItem value="Senior">Senior </MenuItem>
-                    <MenuItem value="Lead">Lead</MenuItem>
                     <MenuItem value="Junior">Junior</MenuItem>
+                    <MenuItem value="Mid">Mid</MenuItem>
+                    <MenuItem value="Senior">Senior</MenuItem>
+                    <MenuItem value="Lead">Lead</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
+
+              {/* Location */}
               <Grid item xs={12}>
                 <TextField fullWidth label="Location" name="location"
                   value={jobData.location} onChange={handleInputChange} required />
               </Grid>
+
+              {/*  Posting Date */}
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth type="date" label="Posting Date"
+                  name="postingDate" InputLabelProps={{ shrink: true }}
+                  value={jobData.postingDate} onChange={handleInputChange} required />
+              </Grid>
+
+              {/*  Application Deadline */}
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth type="date" label="Application Deadline"
+                  name="applicationDeadline" InputLabelProps={{ shrink: true }}
+                  value={jobData.applicationDeadline} onChange={handleInputChange} required />
+              </Grid>
+
+              {/* Buttons */}
               <Grid item xs={12}>
                 <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                   <Button variant="outlined" onClick={() => navigate("/jobs")}>Cancel</Button>

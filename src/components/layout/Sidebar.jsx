@@ -123,17 +123,19 @@ const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, isMobile }) => {
       <Box sx={{ p: 3, backgroundColor: '#f8fafc' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
-            sx={{
-              width: 48,
-              height: 48,
-              mr: 2,
-              backgroundColor: 'primary.main',
-              fontSize: '1.2rem',
-              fontWeight: 'bold'
-            }}
-          >
-            {user?.name?.charAt(0)?.toUpperCase()}
-          </Avatar>
+           src={user?.photo || ""}
+           sx={{
+           width: 48,
+           height: 48,
+           mr: 2,
+           backgroundColor: 'primary.main',
+           fontSize: '1.2rem',
+           fontWeight: 'bold'
+           }}
+           >
+  {!user?.photo && user?.fullName?.charAt(0)?.toUpperCase()}
+</Avatar>
+
           <Box>
             <Typography variant="subtitle1" fontWeight="600">
               {user?.fullName}

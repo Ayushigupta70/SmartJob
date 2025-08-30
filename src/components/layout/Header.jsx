@@ -163,16 +163,18 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
             <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0.5 }}>
               <Avatar
-                sx={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: 'primary.main',
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                }}
+              src={user?.photo || ""}
+              sx={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'primary.main',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              }}
               >
-                {user?.name?.charAt(0)?.toUpperCase()}
-              </Avatar>
+              {!user?.photo && user?.fullName?.charAt(0)?.toUpperCase()}
+             </Avatar>
+
             </IconButton>
 
             <Box sx={{ ml: 1, display: { xs: 'none', sm: 'block' } }}>

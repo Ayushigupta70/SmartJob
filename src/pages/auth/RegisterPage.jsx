@@ -234,10 +234,10 @@ const RegisterPage = () => {
                       fullWidth
                       variant="contained"
                       size="large"
-                      disabled={loading || !formData.acceptTerms}
+                      // disabled={loading || !formData.acceptTerms}
                       sx={{ mt: 3, mb: 2, py: 1.5 }}
                     >
-                      {loading ? "Creating Account..." : "Create Account"}
+                      { "Create Account"}
                     </Button>
 
                     <Box sx={{ textAlign: "center" }}>

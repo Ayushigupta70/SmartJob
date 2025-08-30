@@ -23,7 +23,6 @@ import RecentActivities from '../../components/dashboard/RecentActivities.jsx';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
-  // Mock data - in real app, this would come from API
   const statsData = [
     {
       title: 'Active Jobs',
@@ -91,7 +90,6 @@ const DashboardPage = () => {
             ))}
           </Grid>
         </Grid>
-
         {/* Profile Section */}
         <Grid item xs={12} md={4}>
           <Card sx={{ height: '100%' }}>
@@ -113,10 +111,9 @@ const DashboardPage = () => {
                   Ayushi Gupta
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Senior Recruiter
+                  Recruiter
                 </Typography>
               </Box>
-
               <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2" fontWeight="600">
@@ -139,7 +136,6 @@ const DashboardPage = () => {
                   }}
                 />
               </Box>
-
               <Box sx={{ mb: 3 }}>
                 <Typography variant="subtitle2" fontWeight="600" sx={{ mb: 2 }}>
                   Hiring Focus Areas
@@ -167,7 +163,6 @@ const DashboardPage = () => {
                   </Box>
                 ))}
               </Box>
-
               <Button
                 variant="contained"
                 fullWidth
@@ -179,12 +174,10 @@ const DashboardPage = () => {
             </CardContent>
           </Card>
         </Grid>
-
         {/* Vacancy Stats Chart */}
         <Grid item xs={12} md={8}>
           <VacancyStatsChart />
         </Grid>
-
         {/* Recent Activities */}
         <Grid item xs={12}>
           <RecentActivities />
@@ -193,5 +186,4 @@ const DashboardPage = () => {
     </Box>
   );
 };
-
 export default DashboardPage;

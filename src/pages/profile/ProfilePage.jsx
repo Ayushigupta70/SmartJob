@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,22 +8,43 @@ import {
   Grid,
   Button,
   TextField,
-} from '@mui/material';
-import { Edit, Save, Cancel, Person } from '@mui/icons-material';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+} from "@mui/material";
+import { Edit, Save, Cancel, Person, Upload } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { updateRecruiterProfile } from "../../slice/RegisterSlice";
 
 const ProfilePage = () => {
-  const { user, setUser } = useAuth(); // make sure setUser is provided in AuthContext
+  const dispatch = useDispatch();
+  const { user, loading } = useSelector((state) => state.users);
+
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(user || {});
+  const [preview, setPreview] = useState(user?.photo || "");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Save profile update
   const handleSave = () => {
-    setUser(formData); // update user in context
-    setEditMode(false);
+    dispatch(updateRecruiterProfile(formData)).then((res) => {
+      if (!res.error) {
+        setEditMode(false);
+      }
+    });
+  };
+
+  // Handle photo preview (local only – upload logic can be added later)
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        setFormData({ ...formData, photo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -39,19 +60,45 @@ const ProfilePage = () => {
         <Grid item xs={12} md={8}>
           <Card>
             <CardContent sx={{ p: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-                <Avatar
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    mr: 3,
-                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                    fontSize: '2rem',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {formData?.name?.charAt(0)?.toUpperCase()}
-                </Avatar>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+                {/* Avatar + Upload */}
+                <Box sx={{ position: "relative", mr: 3 }}>
+                  <Avatar
+                    src={preview || ""}
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      background:
+                        "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                      fontSize: "2rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {!preview && formData?.fullName?.charAt(0)?.toUpperCase()}
+                  </Avatar>
+
+                  {editMode && (
+                    <label htmlFor="upload-photo">
+                      <input
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        id="upload-photo"
+                        type="file"
+                        onChange={handlePhotoChange}
+                      />
+                      <Button
+                        component="span"
+                        size="small"
+                        startIcon={<Upload />}
+                        sx={{ mt: 1 }}
+                      >
+                        Upload Photo
+                      </Button>
+                    </label>
+                  )}
+                </Box>
+
+                {/* Editable Info */}
                 <Box sx={{ flexGrow: 1 }}>
                   {editMode ? (
                     <>
@@ -64,8 +111,8 @@ const ProfilePage = () => {
                         sx={{ mb: 2 }}
                       />
                       <TextField
-                        name="Company"
-                        label="companyName"
+                        name="companyName"
+                        label="Company Name"
                         value={formData.companyName || ""}
                         onChange={handleChange}
                         fullWidth
@@ -90,10 +137,10 @@ const ProfilePage = () => {
                   ) : (
                     <>
                       <Typography variant="h5" fontWeight="bold">
-                        {user?.name}
+                        {user?.fullName}
                       </Typography>
                       <Typography variant="body1" color="text.secondary">
-                        {user?.role} at {user?.company}
+                        {user?.role} at {user?.companyName}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {user?.email}
@@ -101,13 +148,15 @@ const ProfilePage = () => {
                     </>
                   )}
                 </Box>
+                {/* Actions */}
                 {editMode ? (
                   <>
                     <Button
                       variant="contained"
                       startIcon={<Save />}
                       onClick={handleSave}
-                      sx={{ mr: 1 }}
+                      disabled={loading}
+                      sx={{ mr: 1}}
                     >
                       Save
                     </Button>
@@ -134,21 +183,25 @@ const ProfilePage = () => {
                 Profile Information
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                This section will contain editable profile information including logo,
-                description, and industry details as mentioned in the requirements.
+                This section will contain editable profile information including
+                logo, description, and industry details.
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-
+        {/* Right-side Card */}
         <Grid item xs={12} md={4}>
           <Card>
-            <CardContent sx={{ p: 3, textAlign: 'center' }}>
-              <Person sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+            <CardContent sx={{ p: 3, textAlign: "center" }}>
+              <Person sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
               <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Company Verification
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mb: 3 }}
+              >
                 Upload documents for company verification
               </Typography>
               <Button variant="contained" fullWidth>

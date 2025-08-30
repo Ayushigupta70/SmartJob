@@ -7,8 +7,7 @@ import {
 import { Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchJobs,deleteJob } from "../../slice/JobSlice";
-
+import { fetchJobs, deleteJob } from "../../slice/JobSlice";
 
 const ManageJobsPage = () => {
   const navigate = useNavigate();
@@ -23,11 +22,20 @@ const ManageJobsPage = () => {
     dispatch(deleteJob(id));
     alert(`Delete job with ID: ${id} (API call pending)`);
     dispatch(fetchJobs());
-  
   };
 
   const handleEdit = (id) => {
     navigate(`/jobs/edit/${id}`);
+  };
+
+  // ✅ Format dates nicely
+  const formatDate = (date) => {
+    if (!date) return "N/A";
+    return new Date(date).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
@@ -57,6 +65,8 @@ const ManageJobsPage = () => {
                 <TableCell><strong>Type</strong></TableCell>
                 <TableCell><strong>Experience</strong></TableCell>
                 <TableCell><strong>Skills</strong></TableCell>
+                <TableCell><strong>Deadline</strong></TableCell>
+                <TableCell><strong>Status</strong></TableCell>
                 <TableCell align="center"><strong>Actions</strong></TableCell>
               </TableRow>
             </TableHead>
@@ -80,6 +90,8 @@ const ManageJobsPage = () => {
                         />
                       ))}
                     </TableCell>
+                    <TableCell>{formatDate(job.applicationDeadline)}</TableCell>
+                    <TableCell>{job.status}</TableCell>
                     <TableCell align="center">
                       <Tooltip title="Edit">
                         <IconButton color="primary" onClick={() => handleEdit(job._id || job.id)}>
@@ -96,7 +108,7 @@ const ManageJobsPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">
+                  <TableCell colSpan={10} align="center">
                     No jobs found.
                   </TableCell>
                 </TableRow>
