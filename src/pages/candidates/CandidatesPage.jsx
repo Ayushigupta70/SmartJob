@@ -96,7 +96,7 @@ const CandidatesPage = () => {
               <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 View all candidates who have selected to for job position
               </Typography>
-              <Button variant="contained" onClick={() => navigate('/candidates/accapted')} fullWidth>
+              <Button variant="contained" onClick={() => navigate('/candidates/accepted')} fullWidth>
               View Selected
               </Button>
 

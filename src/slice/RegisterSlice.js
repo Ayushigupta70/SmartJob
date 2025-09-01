@@ -42,26 +42,20 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// ✅ Update Recruiter Profile API
 export const updateRecruiterProfile = createAsyncThunk(
   "users/updateRecruiterProfile",
   async (formData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().users.token;
-      const res = await axios.put("/user/recruiter/profile", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      const response = await axios.put(`/user/recruiter/profile`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      return res.data;
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update profile"
-      );
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
+
 
 // ✅ Initial state with safe localStorage parsing
 const initialState = {

@@ -25,27 +25,39 @@ const ProfilePage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save profile update
-  const handleSave = () => {
-    dispatch(updateRecruiterProfile(formData)).then((res) => {
-      if (!res.error) {
-        setEditMode(false);
-      }
-    });
-  };
+ // Save profile update
+const handleSave = () => {
+  const formDataToSend = new FormData();
+
+  // Append text fields
+  Object.keys(formData).forEach((key) => {
+    if (key !== "photo") {
+      formDataToSend.append(key, formData[key]);
+    }
+  });
+
+  // Append photo if exists (only File, not Base64)
+  if (formData.photo instanceof File) {
+    formDataToSend.append("photo", formData.photo);
+  }
+
+  dispatch(updateRecruiterProfile(formDataToSend)).then((res) => {
+    if (!res.error) {
+      setEditMode(false);
+    }
+  });
+};
+
 
   // Handle photo preview (local only – upload logic can be added later)
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-        setFormData({ ...formData, photo: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+ const handlePhotoChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setFormData({ ...formData, photo: file }); // store file object
+    setPreview(URL.createObjectURL(file)); // preview
+  }
+};
+
 
   return (
     <Box>
@@ -61,10 +73,9 @@ const ProfilePage = () => {
           <Card>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
-                {/* Avatar + Upload */}
                 <Box sx={{ position: "relative", mr: 3 }}>
                   <Avatar
-                    src={preview || ""}
+                    src={preview || user?.photo || ""}
                     sx={{
                       width: 80,
                       height: 80,
@@ -74,7 +85,7 @@ const ProfilePage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {!preview && formData?.fullName?.charAt(0)?.toUpperCase()}
+                    {!preview && !user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
                   </Avatar>
 
                   {editMode && (
@@ -124,12 +135,20 @@ const ProfilePage = () => {
                         value={formData.role || ""}
                         onChange={handleChange}
                         fullWidth
-                        sx={{ mb: 2 }}
+                        sx={{ mb: 2}}
                       />
                       <TextField
                         name="email"
                         label="Email"
                         value={formData.email || ""}
+                        onChange={handleChange}
+                        fullWidth
+                        sx={{mb:2}}
+                      />
+                      <TextField
+                        name="phoneNumber"
+                        label="Phone Number"
+                        value={formData.phoneNumber || ""}
                         onChange={handleChange}
                         fullWidth
                       />
@@ -144,6 +163,9 @@ const ProfilePage = () => {
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {user?.email}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {user?.phoneNumber}
                       </Typography>
                     </>
                   )}
@@ -162,6 +184,8 @@ const ProfilePage = () => {
                     </Button>
                     <Button
                       variant="outlined"
+                      size="small" 
+                      sx={{ minWidth: 100, fontSize: "0.9rem", textTransform: "none" }}
                       startIcon={<Cancel />}
                       onClick={() => setEditMode(false)}
                     >
