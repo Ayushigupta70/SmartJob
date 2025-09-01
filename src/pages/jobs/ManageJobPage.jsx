@@ -38,6 +38,26 @@ const ManageJobsPage = () => {
     });
   };
 
+  // ✅ Truncate text helper
+  const truncateText = (text, wordLimit = 5) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    return words.length > wordLimit
+      ? words.slice(0, wordLimit).join(" ") + "..."
+      : text;
+  };
+
+  // ✅ Determine if job is expired
+  const getJobStatus = (job) => {
+    const today = new Date();
+    const deadline = new Date(job.applicationDeadline);
+
+    if (deadline < today) {
+      return "Expired";
+    }
+    return job.status || "Active";
+  };
+
   return (
     <Box>
       <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -72,40 +92,56 @@ const ManageJobsPage = () => {
             </TableHead>
             <TableBody>
               {jobs2.length > 0 ? (
-                jobs2.map((job) => (
-                  <TableRow key={job._id || job.id}>
-                    <TableCell>{job.jobTitle}</TableCell>
-                    <TableCell>{job.jobDescription}</TableCell>
-                    <TableCell>{job.location}</TableCell>
-                    <TableCell>₹{job.minimumSalary} - ₹{job.maximumSalary}</TableCell>
-                    <TableCell>{job.jobType}</TableCell>
-                    <TableCell>{job.experienceLevel}</TableCell>
-                    <TableCell>
-                      {job.skill?.map((skill, index) => (
+                jobs2.map((job) => {
+                  const jobStatus = getJobStatus(job);
+                  return (
+                    <TableRow key={job._id || job.id}>
+                      <TableCell>{job.jobTitle}</TableCell>
+                      <TableCell>{truncateText(job.jobDescription, 10)}</TableCell>
+                      <TableCell>{job.location}</TableCell>
+                      <TableCell>₹{job.minimumSalary} - ₹{job.maximumSalary}</TableCell>
+                      <TableCell>{job.jobType}</TableCell>
+                      <TableCell>{job.experienceLevel}</TableCell>
+                      <TableCell>
+                        {job.skill?.slice(0, 3).map((skill, index) => (
+                          <Chip
+                            key={index}
+                            label={skill}
+                            size="small"
+                            sx={{ mr: 0.5, mb: 0.5 }}
+                          />
+                        ))}
+                        {job.skill?.length > 3 && <span>...</span>}
+                      </TableCell>
+                      <TableCell>{formatDate(job.applicationDeadline)}</TableCell>
+                      <TableCell>
                         <Chip
-                          key={index}
-                          label={skill}
+                          label={jobStatus}
                           size="small"
-                          sx={{ mr: 0.5, mb: 0.5 }}
+                          sx={{
+                            backgroundColor:
+                              jobStatus.toLowerCase() === "active" ? "#1976d2" : "#d32f2f",
+                            color: "white",
+                            fontWeight: "bold",
+                          }}
                         />
-                      ))}
-                    </TableCell>
-                    <TableCell>{formatDate(job.applicationDeadline)}</TableCell>
-                    <TableCell>{job.status}</TableCell>
-                    <TableCell align="center">
-                      <Tooltip title="Edit">
-                        <IconButton color="primary" onClick={() => handleEdit(job._id || job.id)}>
-                          <Edit />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton color="error" onClick={() => handleDelete(job._id || job.id)}>
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      
+                      <TableCell align="center">
+                        <Tooltip title="Edit">
+                          <IconButton color="primary" onClick={() => handleEdit(job._id || job.id)}>
+                            <Edit />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton color="error" onClick={() => handleDelete(job._id || job.id)}>
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} align="center">

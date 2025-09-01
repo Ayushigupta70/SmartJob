@@ -133,8 +133,8 @@ const Sidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, isMobile }) => {
            fontWeight: 'bold'
            }}
            >
-  {!user?.photo && user?.fullName?.charAt(0)?.toUpperCase()}
-</Avatar>
+           {!user?.photo && user?.fullName?.charAt(0)?.toUpperCase()}
+          </Avatar>
 
           <Box>
             <Typography variant="subtitle1" fontWeight="600">

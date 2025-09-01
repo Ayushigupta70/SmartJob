@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../utils/axios";
 
-// ✅ Helper function to safely parse JSON
+
 const safeJSONParse = (key) => {
   try {
     const value = localStorage.getItem(key);
@@ -12,7 +12,7 @@ const safeJSONParse = (key) => {
   }
 };
 
-// ✅ Register API
+//  Register API
 export const registerUser = createAsyncThunk(
   "users/registerUser",
   async (formData, thunkAPI) => {

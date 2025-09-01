@@ -19,15 +19,26 @@ const EditJobPage = () => {
   }, [dispatch, jobs2]);
 
   useEffect(() => {
-    if (jobs2 && jobs2.length > 0) {
-      const existingJob = jobs2.find((j) => j._id === id || j.id === id);
-      if (existingJob) {
-        setJob(existingJob);
-      } else {
-        navigate("/jobs/manage");
-      }
+  if (jobs2 && jobs2.length > 0) {
+    const existingJob = jobs2.find((j) => j._id === id || j.id === id);
+    if (existingJob) {
+      // ✅ Format dates for input[type="date"]
+      const formattedJob = {
+        ...existingJob,
+        postingDate: existingJob.postingDate
+          ? new Date(existingJob.postingDate).toISOString().split("T")[0]
+          : "",
+        applicationDeadline: existingJob.applicationDeadline
+          ? new Date(existingJob.applicationDeadline).toISOString().split("T")[0]
+          : "",
+      };
+      setJob(formattedJob);
+    } else {
+      navigate("/jobs/manage");
     }
-  }, [jobs2, id, navigate]);
+  }
+}, [jobs2, id, navigate]);
+
 
   const handleUpdate = (updatedJob) => {
     dispatch(updateJob({ ...updatedJob, _id: id }))

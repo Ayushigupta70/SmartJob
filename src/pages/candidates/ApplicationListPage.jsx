@@ -52,6 +52,14 @@ const dummyApplicants = [
   status:'Pending',
   resume:'https://example.com/resume-manisha.pdf'
   },
+  {id: 6,
+  jobTitle: 'SDE',
+  name:'Anuj Gupta',
+  email:'anuj@example.com',
+  contact:'6547891230',
+  status:'Pending',
+  resume:'https://example.com/resume-anuj.pdf'
+  }
 ];
 
 const ApplicantListPage = () => {

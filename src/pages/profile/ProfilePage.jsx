@@ -75,18 +75,21 @@ const handleSave = () => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
                 <Box sx={{ position: "relative", mr: 3 }}>
                   <Avatar
-                    src={preview || user?.photo || ""}
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      background:
-                        "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-                      fontSize: "2rem",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {!preview && !user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
-                  </Avatar>
+  src={
+    preview ||
+    (user?.photo ? `http://localhost:4000/${user.photo.replace(/\\/g, "/")}` : "")
+  }
+  sx={{
+    width: 80,
+    height: 80,
+    background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+    fontSize: "2rem",
+    fontWeight: "bold",
+  }}
+>
+  {!preview && !user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
+</Avatar>
+
 
                   {editMode && (
                     <label htmlFor="upload-photo">
