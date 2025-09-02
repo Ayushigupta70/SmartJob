@@ -86,11 +86,6 @@ const handleSave = () => {
 >
   {!user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
 </Avatar>
-
-
-
-
-
                   {editMode && (
                     <label htmlFor="upload-photo">
                       <input

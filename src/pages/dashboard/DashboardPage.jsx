@@ -5,13 +5,11 @@ import {
   Card,
   CardContent,
   Typography,
-  Paper,
   Avatar,
   LinearProgress,
   Button,
 } from '@mui/material';
 import {
-  TrendingUp,
   Work,
   People,
   Schedule,
@@ -23,6 +21,9 @@ import RecentActivities from '../../components/dashboard/RecentActivities.jsx';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
+  // 🔹 user data localStorage se lo
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const statsData = [
     {
       title: 'Active Jobs',
@@ -90,30 +91,36 @@ const DashboardPage = () => {
             ))}
           </Grid>
         </Grid>
+
         {/* Profile Section */}
         <Grid item xs={12} md={4}>
           <Card sx={{ height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
                 <Avatar
+                  src={user?.photo || ""}
                   sx={{
                     width: 80,
                     height: 80,
                     mb: 2,
-                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                    background: !user?.photo
+                      ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)'
+                      : 'transparent',
                     fontSize: '2rem',
                     fontWeight: 'bold'
                   }}
                 >
-                  A
+                  {!user?.photo && (user?.fullName?.charAt(0) || "U")}
                 </Avatar>
+
                 <Typography variant="h6" fontWeight="bold">
-                  Ayushi Gupta
+                  {user?.fullName || "Guest User"}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Recruiter
+                  {user?.role || "Recruiter"}
                 </Typography>
               </Box>
+
               <Box sx={{ mb: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2" fontWeight="600">
@@ -130,12 +137,11 @@ const DashboardPage = () => {
                     height: 8,
                     borderRadius: 4,
                     backgroundColor: '#e2e8f0',
-                    '& .MuiLinearProgress-bar': {
-                      borderRadius: 4,
-                    },
+                    '& .MuiLinearProgress-bar': { borderRadius: 4 },
                   }}
                 />
               </Box>
+
               <Box sx={{ mb: 3 }}>
                 <Typography variant="subtitle2" fontWeight="600" sx={{ mb: 2 }}>
                   Hiring Focus Areas
@@ -155,14 +161,13 @@ const DashboardPage = () => {
                         height: 4,
                         borderRadius: 2,
                         backgroundColor: '#e2e8f0',
-                        '& .MuiLinearProgress-bar': {
-                          borderRadius: 2,
-                        },
+                        '& .MuiLinearProgress-bar': { borderRadius: 2 },
                       }}
                     />
                   </Box>
                 ))}
               </Box>
+
               <Button
                 variant="contained"
                 fullWidth
@@ -174,10 +179,12 @@ const DashboardPage = () => {
             </CardContent>
           </Card>
         </Grid>
+
         {/* Vacancy Stats Chart */}
         <Grid item xs={12} md={8}>
           <VacancyStatsChart />
         </Grid>
+
         {/* Recent Activities */}
         <Grid item xs={12}>
           <RecentActivities />
@@ -186,4 +193,5 @@ const DashboardPage = () => {
     </Box>
   );
 };
+
 export default DashboardPage;
