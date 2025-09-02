@@ -74,11 +74,8 @@ const handleSave = () => {
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
                 <Box sx={{ position: "relative", mr: 3 }}>
-                  <Avatar
-  src={
-    preview ||
-    (user?.photo ? `http://localhost:4000/${user.photo.replace(/\\/g, "/")}` : "")
-  }
+<Avatar
+  src={editMode ? preview : user?.photo}
   sx={{
     width: 80,
     height: 80,
@@ -87,8 +84,11 @@ const handleSave = () => {
     fontWeight: "bold",
   }}
 >
-  {!preview && !user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
+  {!user?.photo && formData?.fullName?.charAt(0)?.toUpperCase()}
 </Avatar>
+
+
+
 
 
                   {editMode && (

@@ -126,12 +126,14 @@ const registerSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateRecruiterProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
-      })
+ .addCase(updateRecruiterProfile.fulfilled, (state, action) => {
+  state.loading = false;
+  state.error = null;
+  state.user = action.payload;
+  localStorage.setItem("user", JSON.stringify(action.payload));
+})
+
+
       .addCase(updateRecruiterProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
