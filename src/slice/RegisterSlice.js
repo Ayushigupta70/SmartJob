@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../utils/axios";
-
+import {jwtDecode} from "jwt-decode";
 
 const safeJSONParse = (key) => {
   try {
@@ -11,8 +11,32 @@ const safeJSONParse = (key) => {
     return null;
   }
 };
+// Global logout timer
+let logoutTimer;
+// Set auto logout based on token expiry
+const setAutoLogout = (dispatch, token) => {
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.exp) {
+      const expiryTime = decoded.exp * 1000; // convert to ms
+      const remainingTime = expiryTime - Date.now();
+ 
+      if (logoutTimer) clearTimeout(logoutTimer);
 
-//  Register API
+      if (remainingTime > 0) {
+        logoutTimer = setTimeout(() => {
+          dispatch(registerSlice.actions.logout());
+        }, remainingTime);
+      } else {
+        // Token already expired
+        dispatch(registerSlice.actions.logout());
+      }
+    }
+  } catch (err) {
+    console.error("Invalid token", err);
+  }
+};
+// --- Thunks ---
 export const registerUser = createAsyncThunk(
   "users/registerUser",
   async (formData, thunkAPI) => {
@@ -27,12 +51,13 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// ✅ Login API
 export const loginUser = createAsyncThunk(
   "users/loginUser",
   async (formData, thunkAPI) => {
     try {
       const response = await axios.post(`user/login`, formData);
+      // Start auto logout timer
+      setAutoLogout(thunkAPI.dispatch, response.data.token);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -55,9 +80,21 @@ export const updateRecruiterProfile = createAsyncThunk(
     }
   }
 );
-
-
-// ✅ Initial state with safe localStorage parsing
+// Restore session on page reload
+export const restoreSession = () => (dispatch) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const decoded = jwtDecode(token);
+    if (decoded.exp * 1000 > Date.now()) {
+      // Token still valid → start auto logout timer
+      setAutoLogout(dispatch, token);
+    } else {
+      // Token expired → logout immediately
+      dispatch(registerSlice.actions.logout());
+    }
+  }
+};
+// --- Initial State ---
 const initialState = {
   loading: false,
   error: null,
@@ -66,7 +103,7 @@ const initialState = {
   token: localStorage.getItem("token") || null,
   userRole: localStorage.getItem("role") || null,
 };
-
+// --- Slice ---
 const registerSlice = createSlice({
   name: "users",
   initialState,
@@ -81,11 +118,13 @@ const registerSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("user");
+
+      if (logoutTimer) clearTimeout(logoutTimer);
     },
   },
   extraReducers: (builder) => {
     builder
-      // ✅ Register cases
+      // Register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -99,8 +138,7 @@ const registerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      // ✅ Login cases
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -120,20 +158,17 @@ const registerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      // ✅ Update recruiter profile cases
+      // Update recruiter profile
       .addCase(updateRecruiterProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
- .addCase(updateRecruiterProfile.fulfilled, (state, action) => {
-  state.loading = false;
-  state.error = null;
-  state.user = action.payload;
-  localStorage.setItem("user", JSON.stringify(action.payload));
-})
-
-
+      .addCase(updateRecruiterProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      })
       .addCase(updateRecruiterProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

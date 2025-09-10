@@ -23,6 +23,17 @@ export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async (_, thunkApi) 
     );
   }
 });
+export const fetchJobStats = createAsyncThunk("jobs/fetchJobStats", async (_, thunkApi) => {
+  try {
+    const res = await axios.get(`jobs/stats`);
+    return res.data.data;
+  } catch (err) {
+    return thunkApi.rejectWithValue(
+      err.response?.data?.message || "Failed to fetch job stats"
+    );
+  }
+});
+
 export const updateJob = createAsyncThunk("jobs/updateJob",async (jobData, thunkApi) => {
     try {
       const res = await axios.put(`jobs/${jobData._id}`, jobData);
@@ -51,6 +62,7 @@ const initialState = {
   loading: false,
   error: null,
   success: false,
+  stats: { totalJobs: 0, activeJobs: 0 },
 };
 
 const jobSlice = createSlice({
@@ -96,6 +108,19 @@ const jobSlice = createSlice({
     builder.addCase(deleteJob.fulfilled, (state, action) => {
       state.jobs = state.jobs.filter((job) => job._id !== action.payload);
     });
+    builder.addCase(fetchJobStats.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+});
+builder.addCase(fetchJobStats.fulfilled, (state, action) => {
+  state.loading = false;
+  state.stats = action.payload;  // ✅ save stats
+});
+builder.addCase(fetchJobStats.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+});
+
   },
 });
 

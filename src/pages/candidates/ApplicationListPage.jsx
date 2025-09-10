@@ -59,6 +59,14 @@ const dummyApplicants = [
   contact:'6547891230',
   status:'Pending',
   resume:'https://example.com/resume-anuj.pdf'
+  },{
+    id:7,
+    jobTitle:'SEO',
+    name:'Anjali Gupta',
+    email:'anjali@example.com',
+    contact:'7894561230',
+    status:'Pending',
+    resume:'https://example.com/resume-anjali.pdf'
   }
 ];
 

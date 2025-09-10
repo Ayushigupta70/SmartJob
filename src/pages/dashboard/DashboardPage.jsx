@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Grid,
@@ -15,19 +15,26 @@ import {
   Schedule,
   Email,
 } from '@mui/icons-material';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchJobStats } from "../../slice/JobSlice"; // ✅ fetch stats
 import StatsCard from '../../components/dashboard/StatsCard.jsx';
 import VacancyStatsChart from '../../components/dashboard/VacancyStatsChart.jsx';
 import RecentActivities from '../../components/dashboard/RecentActivities.jsx';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
-  // 🔹 user data localStorage se lo
   const user = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
+  const { stats, loading } = useSelector((state) => state.jobs);
+
+  useEffect(() => {
+    dispatch(fetchJobStats());
+  }, [dispatch]);
 
   const statsData = [
     {
       title: 'Active Jobs',
-      value: '12',
+      value: stats.activeJobs || 0, // ✅ dynamic
       icon: <Work />,
       color: 'primary',
       trend: '+2.5%',
@@ -35,7 +42,7 @@ const DashboardPage = () => {
     },
     {
       title: 'Total Applications',
-      value: '156',
+      value: stats.totalJobs || 0, // ✅ dynamic
       icon: <People />,
       color: 'secondary',
       trend: '+12.3%',
@@ -43,7 +50,7 @@ const DashboardPage = () => {
     },
     {
       title: 'Interviews Scheduled',
-      value: '8',
+      value: 8, // static for now
       icon: <Schedule />,
       color: 'success',
       trend: '+5.1%',
@@ -51,7 +58,7 @@ const DashboardPage = () => {
     },
     {
       title: 'Messages',
-      value: '23',
+      value: 23, // static for now
       icon: <Email />,
       color: 'warning',
       trend: '+8.2%',

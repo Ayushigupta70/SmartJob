@@ -28,9 +28,12 @@ const LoginPage = () => {
     e.preventDefault();
     console.log("Submitting login:", formData); // log formData
     dispatch(loginUser(formData))
-        .unwrap()
-        .then((res) => console.log("Login response:", res))
-        .catch((err) => console.error("Login failed:", err));
+  .unwrap()
+  .then((res) => {
+    console.log("Login response:", res);
+    dispatch(setLogoutTimer({ token: res.token, dispatch }));
+  })
+  .catch((err) => console.error("Login failed:", err));
 };
 
 
